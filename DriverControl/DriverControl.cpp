@@ -26,7 +26,8 @@ BOOL DriverControl::insert(LPCTSTR driverFilePath)
 		//schSCManager = NULL;
 		return FALSE;
 	}
-
+	//SERVICE_STATUS sStatus;
+	//QueryServiceStatus(schService, &sStatus);
 	schService = ::CreateService(schSCManager, szName, szName,
 		SERVICE_ALL_ACCESS, SERVICE_KERNEL_DRIVER,
 		SERVICE_DEMAND_START, SERVICE_ERROR_NORMAL,

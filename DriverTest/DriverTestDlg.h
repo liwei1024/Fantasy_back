@@ -44,4 +44,6 @@ public:
 	CEdit edit_log;
 	afx_msg void OnEnChangeEdit3();
 	void showLog(CString log);
+	afx_msg void CamouflageCurrentProcess();
+	CEdit targetProcessId;
 };

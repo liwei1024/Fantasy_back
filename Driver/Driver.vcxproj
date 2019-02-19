@@ -152,6 +152,7 @@
     <ClCompile Include="memory.c" />
     <ClCompile Include="pretend.c" />
     <ClCompile Include="protect.c" />
+    <ClCompile Include="units.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="driver.h" />

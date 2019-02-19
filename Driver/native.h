@@ -14,3 +14,20 @@ NTKERNELAPI NTSTATUS  MmCopyVirtualMemory
 	KPROCESSOR_MODE PreviousMode,
 	PSIZE_T ReturnSize
 );
+
+NTKERNELAPI HANDLE PsGetProcessInheritedFromUniqueProcessId(
+	IN PEPROCESS Process
+);
+
+NTKERNELAPI PCHAR PsGetProcessImageFileName(
+	PEPROCESS Process
+);
+
+NTKERNELAPI NTSTATUS PsReferenceProcessFilePointer(
+	IN PEPROCESS Process,
+	OUT PVOID *pFilePointer
+);
+
+NTKERNELAPI PVOID PsGetProcessSectionBaseAddress(
+	__in PEPROCESS Process
+);

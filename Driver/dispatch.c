@@ -45,6 +45,17 @@ NTSTATUS DispatchDeviceControl(
 			Status = STATUS_SUCCESS;
 			Irp->IoStatus.Information = sizeof(ULONG);
 		}
+		else if (IoControlCode == CAMOUFLAGE_CURRENT_PROCESS)
+		{
+			ULONG ProcessId = 0;
+			if (Irp->AssociatedIrp.SystemBuffer)
+			{
+				memcpy(&ProcessId, Irp->AssociatedIrp.SystemBuffer, sizeof(ProcessId));
+			}
+			CamouflageCurrentProcess((HANDLE)ProcessId);
+			Status = STATUS_SUCCESS;
+			Irp->IoStatus.Information = 0;
+		}
 		else if(g_TargetProcessInfo.ProcessStatus == TRUE)
 		{
 			switch (IoControlCode)

@@ -4,7 +4,7 @@
 
 #define dprintf(Format, ...) DbgPrint("Fantasy: " Format "\n", __VA_ARGS__)
 
-extern HANDLE g_currentProcessId;
+
 
 typedef struct _TARGET_PROCESS_INFO
 {
@@ -22,6 +22,8 @@ typedef struct _TARGET_PROCESS_INFO
 }KCE_TARGET_PROCESS_INFO_STRUCT, *PKCE_TARGET_PROCESS_INFO_STRUCT;
 
 extern KCE_TARGET_PROCESS_INFO_STRUCT g_TargetProcessInfo;
+extern NTKERNELAPI ULONG NtBuildNumber;//系统版本号
+extern HANDLE g_currentProcessId;
 
 /// dispatch
 NTSTATUS DispatchDeviceControl(
@@ -42,3 +44,11 @@ NTSTATUS WriteVirtualMemory(
 NTSTATUS ProtectTheCurrentProcess();
 /// <summary>解除当前进程保护</summary>
 VOID UnprotectTheCurrentProcess();
+
+/// <summary>根据进程ID获取进程名称</summary>
+PCHAR GetProcessNameByProcessId(
+	HANDLE hProcessId
+);
+
+/// <summary>根据进程ID伪装当前进程</summary>
+BOOLEAN CamouflageCurrentProcess(HANDLE TargetProcessId);

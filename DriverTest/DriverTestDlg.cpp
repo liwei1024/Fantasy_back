@@ -67,6 +67,7 @@ void CDriverTestDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT1, DriverFilePath);
 	DDX_Control(pDX, IDC_EDIT2, OutputMessage);
 	DDX_Control(pDX, IDC_EDIT3, edit_log);
+	DDX_Control(pDX, IDC_EDIT4, targetProcessId);
 }
 
 BEGIN_MESSAGE_MAP(CDriverTestDlg, CDialogEx)
@@ -81,6 +82,7 @@ BEGIN_MESSAGE_MAP(CDriverTestDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON7, &CDriverTestDlg::ProtectTheCurrentProcess)
 	ON_BN_CLICKED(IDC_BUTTON6, &CDriverTestDlg::UnprotectTheCurrentProcess)
 	ON_EN_CHANGE(IDC_EDIT3, &CDriverTestDlg::OnEnChangeEdit3)
+	ON_BN_CLICKED(IDC_BUTTON8, &CDriverTestDlg::CamouflageCurrentProcess)
 END_MESSAGE_MAP()
 
 
@@ -278,4 +280,19 @@ void CDriverTestDlg::showLog(CString m_str)
 	edit_log.LineScroll(edit_log.GetLineCount());   //可用于水平滚动所有行最后一个字符,这只是设置edit进行滚动
 
 	
+}
+
+void CDriverTestDlg::CamouflageCurrentProcess()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	// TODO: 在此添加控件通知处理程序代码
+	CString str;
+	targetProcessId.GetWindowTextW(str);
+	ULONG targetProcessId = (ULONG)_wtoi(str);
+	if (!drictl.control(L"\\\\.\\" SYMBOLIC_LINK_SHORT_NAME, CAMOUFLAGE_CURRENT_PROCESS,&targetProcessId, sizeof(targetProcessId), 0, 0)) {
+		showLog(drictl.getMessage());
+	}
+	else {
+		showLog(L"伪装进程");
+	}
 }
