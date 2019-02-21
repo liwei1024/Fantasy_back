@@ -3,18 +3,12 @@
 
 #include "pch.h"
 
-VOID ThreadMessage(MSG *msg);// 线程消息处理
+VOID MainThreadMessage(MSG *msg);// 主线程消息处理
 VOID HotKeyMessage(WPARAM KeyId);// 按键消息处理
+VOID WorkThread();// 工作线程
 bool g_switch = true;
 
-void MainThread()
-{
-	while (g_switch)
-	{
 
-		Sleep(10);
-	}
-}
 
 
 int main()
@@ -33,12 +27,12 @@ int main()
 	{
 		TranslateMessage(&msg);//等待信号
 		DispatchMessage(&msg);//处理信号
-		ThreadMessage(&msg);//线程消息处理
+		MainThreadMessage(&msg);//线程消息处理
 	}
 }
 
 
-VOID ThreadMessage(MSG *msg)
+VOID MainThreadMessage(MSG *msg)
 {
 	switch (msg->message)
 	{
@@ -62,5 +56,15 @@ VOID HotKeyMessage(WPARAM KeyId)
 		break;
 	default:
 		break;
+	}
+}
+
+
+VOID WorkThread()
+{
+	while (g_switch)
+	{
+
+		Sleep(10);
 	}
 }
