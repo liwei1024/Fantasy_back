@@ -3,19 +3,64 @@
 
 #include "pch.h"
 
+VOID ThreadMessage(MSG *msg);// 线程消息处理
+VOID HotKeyMessage(WPARAM KeyId);// 按键消息处理
+bool g_switch = true;
+
+void MainThread()
+{
+	while (g_switch)
+	{
+
+		Sleep(10);
+	}
+}
+
 
 int main()
 {
-    std::cout << "Hello World!\n"; 
+	RegisterHotKey(NULL, VK_F1, NULL, VK_F1);
+	RegisterHotKey(NULL, VK_F2, NULL, VK_F2);
+	RegisterHotKey(NULL, VK_F3, NULL, VK_F3);
+	RegisterHotKey(NULL, VK_F4, NULL, VK_F4); 
+	RegisterHotKey(NULL, VK_INSERT, NULL, VK_INSERT);
+	RegisterHotKey(NULL, VK_END, NULL, VK_END);
+
+	//RegisterWindowMessage(L"");
+
+	MSG msg = { 0 };//消息指针
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		TranslateMessage(&msg);//等待信号
+		DispatchMessage(&msg);//处理信号
+		ThreadMessage(&msg);//线程消息处理
+	}
 }
 
-// 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
-// 调试程序: F5 或调试 >“开始调试”菜单
 
-// 入门提示: 
-//   1. 使用解决方案资源管理器窗口添加/管理文件
-//   2. 使用团队资源管理器窗口连接到源代码管理
-//   3. 使用输出窗口查看生成输出和其他消息
-//   4. 使用错误列表窗口查看错误
-//   5. 转到“项目”>“添加新项”以创建新的代码文件，或转到“项目”>“添加现有项”以将现有代码文件添加到项目
-//   6. 将来，若要再次打开此项目，请转到“文件”>“打开”>“项目”并选择 .sln 文件
+VOID ThreadMessage(MSG *msg)
+{
+	switch (msg->message)
+	{
+	case WM_HOTKEY: // 热键消息
+		HotKeyMessage(msg->wParam);
+		break;
+	default:
+		break;
+	}
+}
+
+VOID HotKeyMessage(WPARAM KeyId)
+{
+	switch (KeyId)
+	{
+	case VK_F1:
+		printf("VK_F1\n");
+		break;
+	case VK_F2:
+		printf("VK_F2\n");
+		break;
+	default:
+		break;
+	}
+}
