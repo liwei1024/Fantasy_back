@@ -22,5 +22,13 @@
 #include <ctime>
 #include <iostream>
 #include <algorithm> 
+#include <Shlwapi.h>
+
+#include "../Driver.hpp"
+#include "../Memory.hpp"
+#include "../utils/utils.h"
+#pragma comment(lib,"utils.lib")
+
+
 
 #endif //PCH_H

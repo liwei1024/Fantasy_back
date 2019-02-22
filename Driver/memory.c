@@ -8,7 +8,13 @@ NTSTATUS ReadVirtualMemory(
 	SIZE_T Bytes;
 	if (g_TargetProcessInfo.ProcessStatus == TRUE)
 	{
-		Status = MmCopyVirtualMemory(g_TargetProcessInfo.Process, (CONST PVOID)rvms->Address, PsGetCurrentProcess(), rvms->Response, (SIZE_T)rvms->Size, KernelMode, &Bytes);
+		Status = MmCopyVirtualMemory(
+			g_TargetProcessInfo.Process, 
+			(CONST PVOID)rvms->Address, 
+			PsGetCurrentProcess(), rvms->Response, 
+			(SIZE_T)rvms->Size, 
+			KernelMode, &Bytes
+		);
 	}
 	return Status;
 
@@ -22,7 +28,15 @@ NTSTATUS WriteVirtualMemory(
 	SIZE_T Bytes;
 	if (g_TargetProcessInfo.ProcessStatus == TRUE)
 	{
-		Status = MmCopyVirtualMemory(PsGetCurrentProcess(), wvms->Value, g_TargetProcessInfo.Process, (PVOID)wvms->Address, (SIZE_T)wvms->Size, KernelMode, &Bytes);
+		Status = MmCopyVirtualMemory(
+			PsGetCurrentProcess(), 
+			wvms->Value, 
+			g_TargetProcessInfo.Process, 
+			(PVOID)wvms->Address, 
+			(SIZE_T)wvms->Size, 
+			KernelMode, 
+			&Bytes
+		);
 	}
 	return Status;
 }

@@ -151,7 +151,9 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="memory.c" />
     <ClCompile Include="pretend.c" />
+    <ClCompile Include="process.c" />
     <ClCompile Include="protect.c" />
+    <ClCompile Include="thread.c" />
     <ClCompile Include="units.c" />
   </ItemGroup>
   <ItemGroup>

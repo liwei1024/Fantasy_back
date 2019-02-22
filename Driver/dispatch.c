@@ -14,9 +14,10 @@ NTSTATUS DispatchDeviceControl(
 	PWRITE_VIRTUAL_MEMORY_STRUCT wvms;
 	ULONG IoControlCode;
 
+	PAGED_CODE();
+	dprintf("TEST");
 	//得到当前堆栈
 	Stack = IoGetCurrentIrpStackLocation(Irp);
-	dprintf("Test");
 	if (Stack) {
 		IoControlCode = Stack->Parameters.DeviceIoControl.IoControlCode;
 		if (IoControlCode == PROTECT_THE_CURRENT_PROCESS)
@@ -32,10 +33,12 @@ NTSTATUS DispatchDeviceControl(
 		}
 		else if (IoControlCode == SET_TARGET_PROCESS_NAME)
 		{
-			/*if (Irp->AssociatedIrp.SystemBuffer)
+			/*wchar_t buffer[255] = { 0 };
+			if (Irp->AssociatedIrp.SystemBuffer)
 			{
-				memcpy(&g_targetProcessName, Irp->AssociatedIrp.SystemBuffer, sizeof(g_targetProcessName));
-			}*/
+				memcpy(buffer, Irp->AssociatedIrp.SystemBuffer, Stack->Parameters.DeviceIoControl.InputBufferLength);
+			}
+			dprintf("name=>:%ws", buffer);*/
 			Status = STATUS_SUCCESS;
 			Irp->IoStatus.Information = 0;
 		}

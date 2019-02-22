@@ -19,11 +19,12 @@ typedef struct _TARGET_PROCESS_INFO
 
 	BOOLEAN ProcessStatus;
 
-}KCE_TARGET_PROCESS_INFO_STRUCT, *PKCE_TARGET_PROCESS_INFO_STRUCT;
+}TARGET_PROCESS_INFO_STRUCT, *PTARGET_PROCESS_INFO_STRUCT;
 
-extern KCE_TARGET_PROCESS_INFO_STRUCT g_TargetProcessInfo;
+extern TARGET_PROCESS_INFO_STRUCT g_TargetProcessInfo;
 extern NTKERNELAPI ULONG NtBuildNumber;//系统版本号
 extern HANDLE g_currentProcessId;
+
 
 /// dispatch
 NTSTATUS DispatchDeviceControl(
@@ -52,3 +53,8 @@ PCHAR GetProcessNameByProcessId(
 
 /// <summary>根据进程ID伪装当前进程</summary>
 BOOLEAN CamouflageCurrentProcess(HANDLE TargetProcessId);
+
+
+HANDLE GetProcessHandle(PEPROCESS Process);
+
+HANDLE GetThreadHandle(PETHREAD Thread);

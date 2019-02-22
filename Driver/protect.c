@@ -30,7 +30,14 @@ OB_PREOP_CALLBACK_STATUS ProcessPreCallback(PVOID RegistrationContext, POB_PRE_O
 		{
 			ACCESS_MASK DesiredAccess = OperationInformation->Parameters->CreateHandleInformation.DesiredAccess;
 
-			DesiredAccess = DesiredAccess & (PROCESS_TERMINATE | PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_SUSPEND_RESUME | PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE);
+			DesiredAccess = DesiredAccess & (
+				PROCESS_TERMINATE | 
+				PROCESS_QUERY_LIMITED_INFORMATION | 
+				PROCESS_SUSPEND_RESUME | 
+				PROCESS_VM_OPERATION | 
+				PROCESS_VM_READ | 
+				PROCESS_VM_WRITE
+				);
 			if (DesiredAccess) {
 				OperationInformation->Parameters->CreateHandleInformation.DesiredAccess &= ~DesiredAccess;// DesiredAccess;
 			}
@@ -39,7 +46,14 @@ OB_PREOP_CALLBACK_STATUS ProcessPreCallback(PVOID RegistrationContext, POB_PRE_O
 		{
 			ACCESS_MASK DesiredAccess = OperationInformation->Parameters->DuplicateHandleInformation.DesiredAccess;
 
-			DesiredAccess = DesiredAccess & (PROCESS_TERMINATE | PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_SUSPEND_RESUME | PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE);
+			DesiredAccess = DesiredAccess & (
+				PROCESS_TERMINATE | 
+				PROCESS_QUERY_LIMITED_INFORMATION | 
+				PROCESS_SUSPEND_RESUME | 
+				PROCESS_VM_OPERATION | 
+				PROCESS_VM_READ | 
+				PROCESS_VM_WRITE
+				);
 			if (DesiredAccess) {
 				OperationInformation->Parameters->DuplicateHandleInformation.DesiredAccess &= ~DesiredAccess;// DesiredAccess;
 			}

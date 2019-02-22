@@ -231,7 +231,9 @@ void CDriverTestDlg::SelectDriverFilePath()
 void CDriverTestDlg::ProtectTheCurrentProcess()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if (!drictl.control(L"\\\\.\\" SYMBOLIC_LINK_SHORT_NAME, PROTECT_THE_CURRENT_PROCESS, 0, 0, 0, 0)) {
+	//if (!drictl.control(L"\\\\.\\" SYMBOLIC_LINK_SHORT_NAME, PROTECT_THE_CURRENT_PROCESS, 0, 0, 0, 0)) {
+	wchar_t buffer[] = L"TEST";
+	if (!drictl.control(L"\\\\.\\" SYMBOLIC_LINK_SHORT_NAME, SET_TARGET_PROCESS_NAME, buffer, sizeof(buffer), 0, 0)) {
 		showLog(drictl.getMessage());
 	}
 	else {

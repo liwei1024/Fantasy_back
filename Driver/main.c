@@ -1,6 +1,9 @@
 #include "pch.h"
 
-KCE_TARGET_PROCESS_INFO_STRUCT g_TargetProcessInfo;
+#define TARGET_PROCESS_FILE_NAME L"YoudaoDict.exe"
+#define TARGET_PROCESS__NAME L"YoudaoDict.exe"
+
+TARGET_PROCESS_INFO_STRUCT g_TargetProcessInfo;
 
 /// <summary>(创建/结束)进程处理</summary>
 VOID ProcessNotify(
@@ -11,12 +14,15 @@ VOID ProcessNotify(
 {
 	if (NULL != CreateInfo)
 	{
-		//if (wcsstr(CreateInfo->ImageFileName->Buffer, L"dnf.exe"))YoudaoDict.exe
-		if (wcsstr(CreateInfo->ImageFileName->Buffer, L"YoudaoDict.exe"))
+		
+		if (wcsstr(CreateInfo->ImageFileName->Buffer, TARGET_PROCESS__NAME))
 		{
 			g_TargetProcessInfo.ProcessStatus = TRUE;
 			g_TargetProcessInfo.ProcessId = ProcessId;
 			g_TargetProcessInfo.Process = Process;
+			//dprintf("id->:%d", PsGetCurrentProcessId());
+			//dprintf("%s",GetProcessNameByProcessId(PsGetCurrentProcessId()));
+			g_TargetProcessInfo.ProcessHandle = GetProcessHandle(Process);
 		}
 	}
 	else {
@@ -30,6 +36,22 @@ VOID ProcessNotify(
 			g_TargetProcessInfo.MainThreadHandle = NULL;
 			g_TargetProcessInfo.ProcessStatus = FALSE;
 		}
+	}
+}
+
+VOID NotifyImageLoadCallback(
+	_In_opt_ PUNICODE_STRING FullImageName,
+	_In_ HANDLE ProcessId,                // pid into which image is being mapped
+	_In_ PIMAGE_INFO ImageInfo
+)
+{
+	UNREFERENCED_PARAMETER(ProcessId);
+	if (wcsstr(FullImageName->Buffer, TARGET_PROCESS_FILE_NAME) && wcsstr(FullImageName->Buffer, L"Device"))
+	{
+		g_TargetProcessInfo.MainThreadId = PsGetCurrentThreadId();
+		g_TargetProcessInfo.MainThread = PsGetCurrentThread();
+		g_TargetProcessInfo.ProcessBaseAddress = ImageInfo->ImageBase;
+		g_TargetProcessInfo.MainThreadHandle = GetThreadHandle(g_TargetProcessInfo.MainThread);
 	}
 }
 
@@ -82,6 +104,8 @@ VOID DriverUnload(
 
 	PsSetCreateProcessNotifyRoutineEx(ProcessNotify, TRUE);
 
+	PsRemoveLoadImageNotifyRoutine(NotifyImageLoadCallback);
+
 	UnprotectTheCurrentProcess();
 
 	RtlInitUnicodeString(&SymbolicLinkName, SYMBOLIC_LINK_NAME);
@@ -101,19 +125,25 @@ NTSTATUS DriverEntry(
 	NTSTATUS Status = STATUS_SUCCESS;
 
 	Status = PsSetCreateProcessNotifyRoutineEx(ProcessNotify, FALSE);// 创建进程监视回调
-
-	if (NT_SUCCESS(Status)) {
-		for (size_t i = 0; i < IRP_MJ_MAXIMUM_FUNCTION; i++)
-			DriverObject->MajorFunction[i] = DefaultDispatchFunction;
-
-		DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = DispatchDeviceControl;
-		DriverObject->DriverUnload = DriverUnload;
-		DriverObject->Flags |= DO_BUFFERED_IO;
-
-		Status = CreateDevice(DriverObject);
+	if (!NT_SUCCESS(Status))
+	{
+		goto exit;
 	}
 
-	//dprintf("id->:%d",PsGetCurrentProcessId());
+	Status = PsSetLoadImageNotifyRoutine(NotifyImageLoadCallback);// 模块加载通知回调函数
+	if (!NT_SUCCESS(Status)) 
+	{
+		goto exit;
+	}
 
+	for (size_t i = 0; i < IRP_MJ_MAXIMUM_FUNCTION; i++)
+		DriverObject->MajorFunction[i] = DefaultDispatchFunction;
+
+	DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = DispatchDeviceControl;
+	DriverObject->DriverUnload = DriverUnload;
+	DriverObject->Flags |= DO_BUFFERED_IO;
+
+	Status = CreateDevice(DriverObject);
+	exit:
 	return Status;
 }

@@ -1,10 +1,10 @@
 #include "DriverControl.h"
-#include <Shlwapi.h>
+
 
 
 DriverControl::DriverControl()
 {
-
+	schSCManager = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);//打开服务管理器
 }
 
 
@@ -12,26 +12,30 @@ DriverControl::~DriverControl()
 {
 }
 
-BOOL DriverControl::insert(LPCTSTR driverFilePath)
+BOOL DriverControl::insert()
 {
-	wchar_t szName[MAX_PATH] = { 0 };
+	wchar_t ServicesName[MAX_PATH] = { 0 };
 
-	::lstrcpy(szName, driverFilePath);
-	::PathStripPath(szName);                   // 过滤掉文件目录，获取文件名
+	::lstrcpy(ServicesName, driverFilePath);
+	::PathStripPathW(ServicesName);                   // 过滤掉文件目录，获取文件名
 
-	schSCManager = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
-	if (!schSCManager)
-	{
-		wsprintfW(returnMessage, L"OpenSCManager Failure  Error Code - <%d>", ::GetLastError());
-		//schSCManager = NULL;
-		return FALSE;
-	}
+	
 	//SERVICE_STATUS sStatus;
 	//QueryServiceStatus(schService, &sStatus);
-	schService = ::CreateService(schSCManager, szName, szName,
-		SERVICE_ALL_ACCESS, SERVICE_KERNEL_DRIVER,
-		SERVICE_DEMAND_START, SERVICE_ERROR_NORMAL,
-		driverFilePath, NULL, NULL, NULL, NULL, NULL);
+	schService = ::CreateService(
+		schSCManager, 
+		ServicesName,
+		ServicesName,
+		SERVICE_ALL_ACCESS, 
+		SERVICE_KERNEL_DRIVER,
+		SERVICE_DEMAND_START, 
+		SERVICE_ERROR_NORMAL,
+		driverFilePath, 
+		NULL,
+		NULL, 
+		NULL, 
+		NULL, NULL
+	);
 	if (!schService)
 	{
 		wsprintfW(returnMessage, L"CreateService Failure  Error Code - <%d>", ::GetLastError());
@@ -40,7 +44,7 @@ BOOL DriverControl::insert(LPCTSTR driverFilePath)
 		return FALSE;
 	}
 
-	schService = OpenService(schSCManager, szName, SERVICE_ALL_ACCESS);
+	schService = OpenService(schSCManager, ServicesName, SERVICE_ALL_ACCESS);
 	if (!schService)
 	{
 		wsprintfW(returnMessage, L"OpenService Failure  Error Code - <%d>", ::GetLastError());
@@ -96,14 +100,14 @@ BOOL DriverControl::unload()
 	return result;
 }
 
-BOOL DriverControl::control(LPCWSTR SymbolicLinkName, DWORD IoControlCode,
+BOOL DriverControl::control(DWORD IoControlCode,
 	PVOID InBuffer, DWORD InBufferSize, PVOID OutBuffer, DWORD OutBufferSize)
 {
 	HANDLE hDevice = INVALID_HANDLE_VALUE;
 	DWORD Junk = 0;
 	DWORD errorCode = 0;
 
-	hDevice = CreateFileW(SymbolicLinkName, 0, FILE_SHARE_READ |
+	hDevice = CreateFileW(symboliLinkName, 0, FILE_SHARE_READ |
 		FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
 	if (hDevice == INVALID_HANDLE_VALUE)
 	{

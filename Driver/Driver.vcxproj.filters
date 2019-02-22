@@ -20,13 +20,19 @@
     <ClCompile Include="memory.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="protect.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="pretend.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="protect.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="units.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="process.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="thread.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
