@@ -16,6 +16,18 @@
 #define PROCESS_SET_LIMITED_INFORMATION    (0x2000) 
 
 PVOID g_RegistrationHandle = NULL;
+OB_PREOP_CALLBACK_STATUS ProcessPreCallback(PVOID RegistrationContext, POB_PRE_OPERATION_INFORMATION OperationInformation);
+VOID ProcessPostCallback(PVOID RegistrationContext, POB_POST_OPERATION_INFORMATION OperationInformation);
+OB_PREOP_CALLBACK_STATUS ThreadPreCallback(PVOID RegistrationContext, POB_PRE_OPERATION_INFORMATION OperationInformation);
+VOID ThreadPostCallback(PVOID RegistrationContext, POB_POST_OPERATION_INFORMATION OperationInformation);
+
+//#pragma alloc_text(PAGE, ProcessPreCallback)
+//#pragma alloc_text(PAGE, ProcessPostCallback)
+//#pragma alloc_text(PAGE, ThreadPreCallback)
+//#pragma alloc_text(PAGE, ThreadPostCallback)
+
+//#pragma alloc_text(PAGE, ProtectTheCurrentProcess)
+//#pragma alloc_text(PAGE, UnprotectTheCurrentProcess)
 
 OB_PREOP_CALLBACK_STATUS ProcessPreCallback(PVOID RegistrationContext, POB_PRE_OPERATION_INFORMATION OperationInformation)
 {
@@ -150,5 +162,4 @@ VOID UnprotectTheCurrentProcess()
 		ObUnRegisterCallbacks(g_RegistrationHandle);
 		g_RegistrationHandle = NULL;
 	}
-	
 }

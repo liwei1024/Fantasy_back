@@ -2,6 +2,8 @@
 
 HANDLE g_currentProcessId = NULL;
 
+//#pragma alloc_text(PAGE, DispatchDeviceControl)
+
 NTSTATUS DispatchDeviceControl(
 	IN PDEVICE_OBJECT DeviceObject,
 	IN PIRP Irp

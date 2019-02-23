@@ -1,5 +1,7 @@
 #include "pch.h"
 
+//#pragma alloc_text(PAGE, GetThreadHandle)
+
 HANDLE GetThreadHandle(PETHREAD Thread)
 {
 	HANDLE ThreadHandle = NULL;

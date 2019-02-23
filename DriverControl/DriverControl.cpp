@@ -4,7 +4,7 @@
 
 DriverControl::DriverControl()
 {
-	schSCManager = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);//打开服务管理器
+	
 }
 
 
@@ -19,9 +19,8 @@ BOOL DriverControl::insert()
 	::lstrcpy(ServicesName, driverFilePath);
 	::PathStripPathW(ServicesName);                   // 过滤掉文件目录，获取文件名
 
+	schSCManager = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);//打开服务管理器
 	
-	//SERVICE_STATUS sStatus;
-	//QueryServiceStatus(schService, &sStatus);
 	schService = ::CreateService(
 		schSCManager, 
 		ServicesName,
@@ -36,11 +35,14 @@ BOOL DriverControl::insert()
 		NULL, 
 		NULL, NULL
 	);
+
+	/*SERVICE_STATUS sStatus;
+	QueryServiceStatus(schService, &sStatus);*/
+
 	if (!schService)
 	{
 		wsprintfW(returnMessage, L"CreateService Failure  Error Code - <%d>", ::GetLastError());
 		::CloseServiceHandle(schSCManager);
-		schSCManager = NULL;
 		return FALSE;
 	}
 
@@ -49,7 +51,6 @@ BOOL DriverControl::insert()
 	{
 		wsprintfW(returnMessage, L"OpenService Failure  Error Code - <%d>", ::GetLastError());
 		//::CloseServiceHandle(schSCManager);
-		schSCManager = NULL;
 		return FALSE;
 	}
 	wsprintfW(returnMessage, L"%s", L"安装成功");
@@ -63,7 +64,6 @@ BOOL DriverControl::start()
 		wsprintfW(returnMessage, L"StartService Failure  Error Code - <%d>", ::GetLastError());
 		//::CloseServiceHandle(schService);
 		//::CloseServiceHandle(schSCManager);
-		schSCManager = NULL;
 		return FALSE;
 	}
 	wsprintfW(returnMessage, L"%s", L"启动成功");
@@ -77,7 +77,6 @@ BOOL DriverControl::stop()
 		wsprintfW(returnMessage, L"StopService Failure  Error Code - <%d>", ::GetLastError());
 		//::CloseServiceHandle(schService);
 		//::CloseServiceHandle(schSCManager);
-		schSCManager = NULL;
 		return FALSE;
 	}
 	wsprintfW(returnMessage, L"%s", L"停止成功");
@@ -95,8 +94,7 @@ BOOL DriverControl::unload()
 		wsprintfW(returnMessage, L"%s", L"卸载成功");
 	}
 	::CloseServiceHandle(schService);
-	::CloseServiceHandle(schSCManager);
-	schSCManager = NULL;
+	//::CloseServiceHandle(schSCManager);
 	return result;
 }
 

@@ -178,8 +178,10 @@ void CDriverTestDlg::DriverInstall()
 	// TODO: 在此添加控件通知处理程序代码
 	CString str;
 	DriverFilePath.GetWindowTextW(str);
+	drictl.driverFilePath = str;
+	drictl.symboliLinkName = L"\\\\.\\" SYMBOLIC_LINK_SHORT_NAME;
 	//OutputDebugString(str);
-	drictl.insert(str);
+	drictl.insert();
 	showLog(drictl.getMessage());
 }
 
@@ -231,9 +233,7 @@ void CDriverTestDlg::SelectDriverFilePath()
 void CDriverTestDlg::ProtectTheCurrentProcess()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	//if (!drictl.control(L"\\\\.\\" SYMBOLIC_LINK_SHORT_NAME, PROTECT_THE_CURRENT_PROCESS, 0, 0, 0, 0)) {
-	wchar_t buffer[] = L"TEST";
-	if (!drictl.control(L"\\\\.\\" SYMBOLIC_LINK_SHORT_NAME, SET_TARGET_PROCESS_NAME, buffer, sizeof(buffer), 0, 0)) {
+	if (!drictl.control(PROTECT_THE_CURRENT_PROCESS, 0, 0, 0, 0)) {
 		showLog(drictl.getMessage());
 	}
 	else {
@@ -245,7 +245,7 @@ void CDriverTestDlg::ProtectTheCurrentProcess()
 void CDriverTestDlg::UnprotectTheCurrentProcess()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if (!drictl.control(L"\\\\.\\" SYMBOLIC_LINK_SHORT_NAME, UNPROTECT_THE_CURRENT_PROCESS, 0, 0, 0, 0)) {
+	if (!drictl.control(UNPROTECT_THE_CURRENT_PROCESS, 0, 0, 0, 0)) {
 		showLog(drictl.getMessage());
 	}
 	else {
@@ -291,7 +291,7 @@ void CDriverTestDlg::CamouflageCurrentProcess()
 	CString str;
 	targetProcessId.GetWindowTextW(str);
 	ULONG targetProcessId = (ULONG)_wtoi(str);
-	if (!drictl.control(L"\\\\.\\" SYMBOLIC_LINK_SHORT_NAME, CAMOUFLAGE_CURRENT_PROCESS,&targetProcessId, sizeof(targetProcessId), 0, 0)) {
+	if (!drictl.control(CAMOUFLAGE_CURRENT_PROCESS,&targetProcessId, sizeof(targetProcessId), 0, 0)) {
 		showLog(drictl.getMessage());
 	}
 	else {

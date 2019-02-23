@@ -1,5 +1,5 @@
 #include "pch.h"
-
+//#pragma alloc_text(PAGE, GetProcessHandle)
 
 HANDLE GetProcessHandle(PEPROCESS Process)
 {

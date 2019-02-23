@@ -1,4 +1,5 @@
 #include "pch.h"
+//#pragma alloc_text(PAGE, GetProcessNameByProcessId)
 
 PCHAR GetProcessNameByProcessId(
 	HANDLE hProcessId

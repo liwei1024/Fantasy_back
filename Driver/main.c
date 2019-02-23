@@ -10,18 +10,54 @@ VOID ProcessNotify(
 	_Inout_  PEPROCESS              Process,
 	_In_     HANDLE                 ProcessId,
 	_In_opt_ PPS_CREATE_NOTIFY_INFO CreateInfo
+);
+/// <summary>模块加载回调通知</summary>
+VOID NotifyImageLoadCallback(
+	_In_opt_ PUNICODE_STRING FullImageName,
+	_In_ HANDLE ProcessId,                // pid into which image is being mapped
+	_In_ PIMAGE_INFO ImageInfo
+);
+/// <summary>创建虚拟设备</summary>
+NTSTATUS CreateDevice(
+	IN PDRIVER_OBJECT DriverObject
+);
+/// <summary>占坑用 请无视</summary>
+NTSTATUS DefaultDispatchFunction(
+	IN PDEVICE_OBJECT DeviceObject,
+	IN PIRP Irp
+);
+/// <summary>驱动入口</summary>
+NTSTATUS DriverEntry(
+	IN PDRIVER_OBJECT DriverObject,
+	IN PUNICODE_STRING RegistryPath
+);
+
+
+
+//#pragma alloc_text(PAGE, ProcessNotify)
+//#pragma alloc_text(PAGE, NotifyImageLoadCallback)
+//#pragma alloc_text(INIT, CreateDevice)
+//#pragma alloc_text(INIT, DefaultDispatchFunction)
+//#pragma alloc_text(INIT, DriverEntry)
+
+/// <summary>(创建/结束)进程处理</summary>
+VOID ProcessNotify(
+	_Inout_  PEPROCESS              Process,
+	_In_     HANDLE                 ProcessId,
+	_In_opt_ PPS_CREATE_NOTIFY_INFO CreateInfo
 )
 {
 	if (NULL != CreateInfo)
 	{
-		
+		dprintf("id->:%d", PsGetCurrentProcessId());
+		dprintf("%s", GetProcessNameByProcessId(PsGetCurrentProcessId()));
 		if (wcsstr(CreateInfo->ImageFileName->Buffer, TARGET_PROCESS__NAME))
 		{
 			g_TargetProcessInfo.ProcessStatus = TRUE;
 			g_TargetProcessInfo.ProcessId = ProcessId;
 			g_TargetProcessInfo.Process = Process;
-			//dprintf("id->:%d", PsGetCurrentProcessId());
-			//dprintf("%s",GetProcessNameByProcessId(PsGetCurrentProcessId()));
+			dprintf("id->:%d", PsGetCurrentProcessId());
+			dprintf("%s",GetProcessNameByProcessId(PsGetCurrentProcessId()));
 			g_TargetProcessInfo.ProcessHandle = GetProcessHandle(Process);
 		}
 	}
@@ -38,7 +74,7 @@ VOID ProcessNotify(
 		}
 	}
 }
-
+/// <summary>模块加载回调通知</summary>
 VOID NotifyImageLoadCallback(
 	_In_opt_ PUNICODE_STRING FullImageName,
 	_In_ HANDLE ProcessId,                // pid into which image is being mapped

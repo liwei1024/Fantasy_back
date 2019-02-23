@@ -1,5 +1,8 @@
 #include "pch.h"
 
+//#pragma alloc_text(PAGE, ReadVirtualMemory)
+//#pragma alloc_text(PAGE, WriteVirtualMemory)
+
 NTSTATUS ReadVirtualMemory(
 	PREAD_VIRTUAL_MEMORY_STRUCT rvms
 )
